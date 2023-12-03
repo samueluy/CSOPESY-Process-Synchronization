@@ -16,6 +16,12 @@ fitting_room = FittingRoom(n) # Create a fitting room object
 threads = [] # Create a list of threads
 print("**************************************\nProgram Start\n**************************************")
 
+#Special Case: No Threads.
+if (b == 0 and g == 0):
+    print("No threads. Fitting room is empty.")
+elif (b <= 0 or g <= 0):
+    print("Invalid number of threads.")
+    
 # Create blue threads
 for i in range(b):
     threads.append(threading.Thread(target = fitting_room.enter, args = ('b',)))
