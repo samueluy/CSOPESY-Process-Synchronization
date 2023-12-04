@@ -1,32 +1,33 @@
 import threading
+import fitting_room
 import time
-import random
-from FittingRoom import FittingRoom  
 
-def thread_behavior(fitting_room, color):
-    fitting_room.enter(color)
-    time.sleep(random.uniform(0.1, 1.0))  
-    fitting_room.leave()
+def run(color, fitting_room_instance):
+    fitting_room_instance.enter(color)
+    time.sleep(1)  # Simulate using the fitting room
+    fitting_room_instance.leave()
 
-# User input for the number of slots and threads
-n = int(input("Enter the number of slots inside the fitting room: "))
-b = int(input("Enter the number of blue threads: "))
-g = int(input("Enter the number of green threads: "))
+def main():
+    slots = int(input("Enter number of slots inside the fitting room: "))
+    num_blue = int(input("Enter number of Blue threads: "))
+    num_green = int(input("Enter number of Green threads: "))
 
-fitting_room = FittingRoom(n)
+    fitting_room_instance = fitting_room.FittingRoom(slots)
 
-print("**************************************\nProgram Start\n**************************************")
+    threads = []
+    for i in range(num_blue):
+        t = threading.Thread(target=run, args=("blue", fitting_room_instance), name=f"Blue-Thread-{i+1}")
+        threads.append(t)
 
-# Create blue and green threads
-blue_threads = [threading.Thread(target=thread_behavior, args=(fitting_room, 'blue'), name=f"Blue-Thread-{i+1}") for i in range(b)]
-green_threads = [threading.Thread(target=thread_behavior, args=(fitting_room, 'green'), name=f"Green-Thread-{i+1}") for i in range(g)]
+    for i in range(num_green):
+        t = threading.Thread(target=run, args=("green", fitting_room_instance), name=f"Green-Thread-{i+1}")
+        threads.append(t)
 
-# Start blue and green threads
-for t in blue_threads + green_threads:
-    t.start()
+    for thread in threads:
+        thread.start()
 
-# Wait for all threads to finish
-for t in blue_threads + green_threads:
-    t.join()
+    for thread in threads:
+        thread.join()
 
-print("**************************************\nProgram End\n**************************************")
+if __name__ == '__main__':
+    main()
