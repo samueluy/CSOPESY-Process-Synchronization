@@ -1,8 +1,11 @@
 import threading
+import time
+import random
 from FittingRoom import FittingRoom  
 
 def thread_behavior(fitting_room, color):
-    fitting_room.enter(color) 
+    fitting_room.enter(color)
+    time.sleep(random.uniform(0.1, 1.0))  
     fitting_room.leave()
 
 # User input for the number of slots and threads
