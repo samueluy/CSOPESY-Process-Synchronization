@@ -1,6 +1,7 @@
 import threading
 import fitting_room
 import time
+import random
 
 def run(color, fitting_room_instance):
     fitting_room_instance.enter(color)
@@ -14,18 +15,18 @@ def main():
 
     fitting_room_instance = fitting_room.FittingRoom(slots)
 
-    threads = []
-    for i in range(num_blue):
-        t = threading.Thread(target=run, args=("blue", fitting_room_instance), name=f"Blue-Thread-{i+1}")
-        threads.append(t)
+    blue_threads = [threading.Thread(target=run, args=("blue", fitting_room_instance), name=f"Blue-Thread-{i+1}") for i in range(num_blue)]
+    green_threads = [threading.Thread(target=run, args=("green", fitting_room_instance), name=f"Green-Thread-{i+1}") for i in range(num_green)]
 
-    for i in range(num_green):
-        t = threading.Thread(target=run, args=("green", fitting_room_instance), name=f"Green-Thread-{i+1}")
-        threads.append(t)
+    # Randomly decide which color group to start first
+    if random.choice(['blue', 'green']) == 'blue':
+        threads = blue_threads + green_threads
+    else:
+        threads = green_threads + blue_threads
 
     for thread in threads:
         thread.start()
-
+        
     for thread in threads:
         thread.join()
 
