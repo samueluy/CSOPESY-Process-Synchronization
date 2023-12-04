@@ -12,7 +12,17 @@ leave_threads = []  # Create a list of leaving threads
 
 print("**************************************\nProgram Start\n**************************************")
 
+<<<<<<< HEAD
 # Create blue entering threads
+=======
+#Special Case: No Threads.
+if (b == 0 and g == 0):
+    print("No threads. Fitting room is empty.")
+elif (b <= 0 or g <= 0):
+    print("Invalid number of threads.")
+    
+# Create blue threads
+>>>>>>> d913c76c34d78abc7a8e85ea2f528742453f77d9
 for i in range(b):
     enter_threads.append(threading.Thread(target=fitting_room.enter, args=('b',)))
 
