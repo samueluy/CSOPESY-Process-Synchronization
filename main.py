@@ -1,38 +1,32 @@
 import threading
-from FittingRoom import FittingRoom
+import time
+import random
+from FittingRoom import FittingRoom  # Assume FittingRoom is in a separate file named fitting_room.py
 
-# User input
-n = int(input("Enter number of slots inside the fitting room: "))
-b = int(input("Enter number of blue threads: "))
-g = int(input("Enter number of green threads: "))
+def thread_behavior(fitting_room, color):
+    fitting_room.enter(color)
+    time.sleep(random.uniform(0.1, 1.0))  # Simulate time spent in the fitting room
+    fitting_room.leave()
 
-fitting_room = FittingRoom(n) # Create a fitting room object
+# User input for the number of slots and threads
+n = int(input("Enter the number of slots inside the fitting room: "))
+b = int(input("Enter the number of blue threads: "))
+g = int(input("Enter the number of green threads: "))
+
+fitting_room = FittingRoom(n)
+
 print("**************************************\nProgram Start\n**************************************")
 
-# Create and start blue threads
-b_threads = []
-for i in range(b):
-    b_threads.append(threading.Thread(target = fitting_room.enter, args = ('b',)))
-    b_threads[-1].start()
-for i in range(b):
-    b_threads.append(threading.Thread(target = fitting_room.leave, args = ('b',)))
-    b_threads[-1].start()
+# Create blue and green threads
+blue_threads = [threading.Thread(target=thread_behavior, args=(fitting_room, 'blue'), name=f"Blue-Thread-{i+1}") for i in range(b)]
+green_threads = [threading.Thread(target=thread_behavior, args=(fitting_room, 'green'), name=f"Green-Thread-{i+1}") for i in range(g)]
 
-# Wait for all blue threads to terminate
-for thread in b_threads:
-    thread.join()
+# Start blue and green threads
+for t in blue_threads + green_threads:
+    t.start()
 
-# Create and start green threads
-g_threads = []
-for i in range(g):
-    g_threads.append(threading.Thread(target = fitting_room.enter, args = ('g',)))
-    g_threads[-1].start()
-for i in range(g):
-    g_threads.append(threading.Thread(target = fitting_room.leave, args = ('g',)))
-    g_threads[-1].start()
-
-# Wait for all green threads to terminate
-for thread in g_threads:
-    thread.join()
+# Wait for all threads to finish
+for t in blue_threads + green_threads:
+    t.join()
 
 print("**************************************\nProgram End\n**************************************")
