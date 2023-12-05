@@ -22,7 +22,7 @@ class FittingRoom:
                 self.condition.wait()
             self.waiting[color] -= 1
             self.occupancy += 1
-            if self.occupancy >= 1:
+            if self.occupancy == 1:
                 logging.debug(f"\n{color.capitalize()} only.")
             self.current_color = color
             logging.debug(f"{thread_id} entered the fitting room.")
@@ -31,7 +31,7 @@ class FittingRoom:
         thread_id = threading.current_thread().name
         with self.condition:
             self.occupancy -= 1
-            if self.occupancy <= 0:
+            if self.occupancy == 0:
                 self.switch_turn()
                 logging.debug("\nEmpty fitting room.")
 
